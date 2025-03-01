@@ -1,10 +1,7 @@
-from pickle import TRUE
-import re
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String
 import subprocess
-import time
 from bleak import BleakScanner
 import asyncio
 import json
@@ -15,7 +12,7 @@ class WifiBluetoothScannerNode(Node):
     def __init__(self):
         super().__init__('wireless_scanner')
         self.publisher = self.create_publisher(String, 'wireless_data', PUBLISHING_TIMER)
-        self.timer = self.create_timer(PUBLISHING_TIMER, self.scan_wifi_bluetooth)  # Scans every 5 seconds
+        self.timer = self.create_timer(PUBLISHING_TIMER, self.scan_wifi_bluetooth)  # Scans every 10 seconds
 
     def scan_wifi_bluetooth(self):
         wifi_data = self.scan_wifi()
