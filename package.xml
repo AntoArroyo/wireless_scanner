@@ -4,7 +4,7 @@
   <name>wireless_scanner</name>
   <version>0.0.0</version>
   <description>TODO: Package description</description>
-  <maintainer email="antoniomanu3el@gmail.com">thoner</maintainer>
+  <maintainer email="arroyo.antom@gmail.com">AntoArroyo</maintainer>
   <license>TODO: License declaration</license>
 
   <test_depend>ament_copyright</test_depend>
@@ -15,4 +15,10 @@
   <export>
     <build_type>ament_python</build_type>
   </export>
+
+  <depend>nav2_msgs</depend>
+
+
+
+
 </package>
