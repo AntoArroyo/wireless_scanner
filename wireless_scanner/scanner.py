@@ -21,6 +21,7 @@ DEVICE_TOP_N = 10
 BLUETOOTH_SCAN_TIMEOUT = 8
 SCAN_DISTANCE_THRESHOLD = 5.0  # Scan every 5 meters
 PUBLISHING_TIMER = 30.0  # Fallback timer for scanning (seconds)
+POSITION_METHOD = "AMCL" # Change it to ODOM for Odometry as position
 
 class WirelessScannerNode(Node):
     """
@@ -28,7 +29,7 @@ class WirelessScannerNode(Node):
     Coordinates WiFi and Bluetooth scanning based on robot movement.
     """
     
-    def __init__(self, use_odom=True):
+    def __init__(self):
         super().__init__('wireless_scanner')
         
         # Initialize publishers
@@ -58,7 +59,7 @@ class WirelessScannerNode(Node):
             """
         
         # Subscribe to odometry or AMCL based on the argument
-        if use_odom:
+        if POSITION_METHOD == "ODOM":
             self.odom_subscription = self.create_subscription(
                 Odometry, 
                 '/odom', 
@@ -67,7 +68,7 @@ class WirelessScannerNode(Node):
             )
             self.get_logger().info("Using Odometry for position updates.")
         else:
-            self.acml_subscription = self.create_subscription(
+            self.amcl_subscription = self.create_subscription(
                 PoseWithCovarianceStamped,
                 '/amcl_pose',
                 self.amcl_pose_callback,
@@ -252,16 +253,7 @@ def main(args=None):
     """
     rclpy.init(args=args)
     
-    # Determine whether to use Odometry or AMCL based on command-line argument
-
-    if args and '--odom' in args:
-        use_odom = True
-    
-    node = WirelessScannerNode(use_odom=use_odom)
+    node = WirelessScannerNode()
     rclpy.spin(node)
     node.destroy_node()
     rclpy.shutdown()
-
-if __name__ == '__main__':
-    import sys
-    main(sys.argv)

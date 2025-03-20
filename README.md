@@ -11,7 +11,6 @@ This ROS2 package contains a node that scans for both Wi-Fi and Bluetooth device
 - Fallback timer-based scanning when odometry data is not available.
 - Stores scan data in XML format with position and orientation information.
 - Uses BSSID as key for WiFi networks and address as key for Bluetooth devices to prevent duplicates.
-- **Selectable Position Source**: Choose between using Odometry (`/odom`) or AMCL (`/amcl_pose`) for position updates. (By default uses acml)
 
 ## Code Structure
 
@@ -63,13 +62,6 @@ To run the wireless scanner node, use the following command:
 ros2 run wireless_scanner wireless_scanner
 ```
 
-To specify the position source, use the --odom argument to use odometry instead of acml for position updates:
-
-```sh
-ros2 run wireless_scanner wireless_scanner --odom
-
-```
-
 ## Configuration
 
 You can modify the following parameters in the `scanner.py` file:
@@ -79,6 +71,7 @@ You can modify the following parameters in the `scanner.py` file:
 - `WIFI_TOP_N`: Maximum number of WiFi networks to include in results (default: 10)
 - `BLUETOOTH_SCAN_TIMEOUT`: Timeout for Bluetooth scanning in seconds (default: 8)
 - `PUBLISHING_TIMER`: Fallback timer period in seconds (default: 10.0)
+- `POSITION_METHOD` : Selects the odometry or acml for position data (default: 'amcl')
 
 ## Data Storage
 
