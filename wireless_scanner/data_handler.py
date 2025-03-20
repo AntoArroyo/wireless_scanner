@@ -16,7 +16,7 @@ class DataHandler:
         
         self.logger.info(f"Data Handler initialized with directory: {self.data_dir}")
     
-    def save_data_to_xml(self, position, orientation, wifi_list, bluetooth_list, filename):
+    def save_data_to_xml(self, position, orientation, transform, wifi_list, bluetooth_list, filename):
         """
         Save position, orientation, WiFi, and Bluetooth data to XML file.
         
@@ -64,6 +64,9 @@ class DataHandler:
         # Add orientation data
         self.add_orientation_to_entry(position_entry, orientation)
         
+        # tf data
+        self.add_transform_to_entry(position_entry, transform)
+        
         # Add WiFi data
         self.add_wifi_to_entry(position_entry, wifi_list)
         
@@ -92,6 +95,20 @@ class DataHandler:
         ET.SubElement(orientation_element, "Y").text = str(orientation['y'])
         ET.SubElement(orientation_element, "Z").text = str(orientation['z'])
         ET.SubElement(orientation_element, "W").text = str(orientation['w'])
+        
+    def add_transform_to_entry(self, position_entry, transform):
+        """
+        Add transform data to a position entry.
+        
+        Args:
+            position_entry: XML element for position
+            transform (dict): Orientation data with x, y, z, w quaternion
+        """
+        tf_element = ET.SubElement(position_entry, "Transform")
+        ET.SubElement(tf_element, "X").text = str(transform['x'])
+        ET.SubElement(tf_element, "Y").text = str(transform['y'])
+        ET.SubElement(tf_element, "Z").text = str(transform['z'])
+        ET.SubElement(tf_element, "W").text = str(transform['w'])
     
     def add_wifi_to_entry(self, position_entry, wifi_list):
         """
@@ -136,65 +153,4 @@ class DataHandler:
         """
         import time
         return int(time.time())
-    
-    def load_last_position(self, filename):
-        """
-        Load the last recorded position from the XML file.
-        
-        Args:
-            filename (str): Name of the XML file to load from
-            
-        Returns:
-            tuple: (position, orientation) dictionaries or (None, None) if not found
-        """
-        file_path = os.path.join(self.data_dir, filename)
-        
-        if not os.path.exists(file_path):
-            self.logger.warn(f"File {file_path} does not exist, cannot load last position")
-            return None, None
-        
-        try:
-            tree = ET.parse(file_path)
-            root = tree.getroot()
-            
-            # Find the last position entry
-            if root.tag == "Positions":
-                positions = root.findall("Position")
-                if positions:
-                    last_position = positions[-1]
-                else:
-                    self.logger.warn("No Position elements found in XML file")
-                    return None, None
-            elif root.tag == "Position":
-                last_position = root
-            else:
-                self.logger.warn(f"Unexpected root tag: {root.tag}")
-                return None, None
-            
-            # Extract position data
-            position = {
-                'x': float(last_position.find("X").text) if last_position.find("X") is not None else 0.0,
-                'y': float(last_position.find("Y").text) if last_position.find("Y") is not None else 0.0,
-                'z': float(last_position.find("Z").text) if last_position.find("Z") is not None else 0.0
-            }
-            
-            # Extract orientation data
-            orientation_elem = last_position.find("Orientation")
-            if orientation_elem is not None:
-                orientation = {
-                    'x': float(orientation_elem.find("X").text) if orientation_elem.find("X") is not None else 0.0,
-                    'y': float(orientation_elem.find("Y").text) if orientation_elem.find("Y") is not None else 0.0,
-                    'z': float(orientation_elem.find("Z").text) if orientation_elem.find("Z") is not None else 0.0,
-                    'w': float(orientation_elem.find("W").text) if orientation_elem.find("W") is not None else 0.0
-                }
-            else:
-                orientation = {'x': 0.0, 'y': 0.0, 'z': 0.0, 'w': 0.0}
-            
-            return position, orientation
-            
-        except ET.ParseError as e:
-            self.logger.error(f"Error parsing XML file {file_path}: {str(e)}")
-            return None, None
-        except Exception as e:
-            self.logger.error(f"Error loading last position from {file_path}: {str(e)}")
-            return None, None
+  
