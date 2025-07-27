@@ -17,7 +17,7 @@ setup(
     maintainer='AntoArroyo',
     maintainer_email='arroyo.antom@gmail.com',
     description='A package for scanning Wi-Fi and Bluetooth devices',
-    license='TODO: License declaration',
+    license='GNU GENERAL PUBLIC LICENSE Version 3',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
