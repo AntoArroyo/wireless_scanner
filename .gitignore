@@ -21,3 +21,9 @@ CMakeCache.txt
 
 # Other temporary files
 .DS_Store
+
+# xml files
+*.xml
+
+# map fles
+map/
