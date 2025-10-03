@@ -191,8 +191,6 @@ class WirelessScannerNode(Node):
         
         self.get_logger().info(f"wifi_data: {wifi_data}")
         
-        # Remove device connected to avoid false positives
-       # wifi_data = [wifi for wifi in wifi_data if wifi['SSID'] != 'RedmiAnto']
         
         # Scan Bluetooth
         bluetooth_list = asyncio.run(self.bluetooth_scanner.scan_bluetooth())
