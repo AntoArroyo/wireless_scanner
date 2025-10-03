@@ -7,7 +7,7 @@ This ROS2 package contains a node that scans for both Wi-Fi and Bluetooth device
 - Scans for Wi-Fi networks using `nmcli` or `iw` (configurable).
 - Scans for Bluetooth Low Energy (BLE) devices using the `BleakScanner`.
 - Publishes the scanned data as a JSON string to the `wireless_data` topic.
-- **Distance-based scanning**: Performs a scan every 5 meters of robot movement.
+- **Distance-based scanning**: Performs a scan every X meters of robot movement.
 - Fallback timer-based scanning when odometry data is not available.
 - Stores scan data in XML format with position and orientation information.
 - Uses BSSID as key for WiFi networks and address as key for Bluetooth devices to prevent duplicates.
@@ -25,7 +25,7 @@ The package has been refactored into modular components:
 
 - ROS2 (Foxy, Galactic, Humble, or Rolling)
 - Python 3.7+
-- `nmcli` or `iw` for WiFi scanning
+- `nmcli` and `iw` for WiFi scanning
 - `bleak` Python package for Bluetooth scanning
 
 ## Installation
@@ -45,7 +45,7 @@ The package has been refactored into modular components:
 
 4. Build the package:
     ```sh
-    cd ~/ros2_ws
+    cd ~/ros2_ws/wireless_scanner
     colcon build
     ```
 
