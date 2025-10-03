@@ -4,23 +4,19 @@ import json
 import math
 
 from rclpy.node import Node
-from std_msgs.msg import String
 from nav_msgs.msg import Odometry
-from sensor_msgs.msg import Imu
 from tf2_msgs.msg import TFMessage
 from geometry_msgs.msg import PoseWithCovarianceStamped
-import tf2_ros
-from tf2_ros import TransformException
 from .wifi_scanner import WiFiScanner
 from .bluetooth_scanner import BluetoothScanner
 from .data_handler import DataHandler
 
 # Configuration constants
 WIFI_SCAN_METHOD = 'iw'  # Choose between 'nmcli' and 'iw'
-DEVICE_TOP_N = 10
+DEVICE_TOP_N = 15
 BLUETOOTH_SCAN_TIMEOUT = 8
-SCAN_DISTANCE_THRESHOLD = 5.0  # Scan every 5 meters
-PUBLISHING_TIMER = 30.0  # Fallback timer for scanning (seconds)
+SCAN_DISTANCE_THRESHOLD = 1.0  # Scan every 1 meters
+PUBLISHING_TIMER = 5.0  # Fallback timer for scanning (seconds)
 POSITION_METHOD = "AMCL" # Change it to ODOM for Odometry as position
 
 class WirelessScannerNode(Node):
@@ -192,6 +188,11 @@ class WirelessScannerNode(Node):
         
         # Scan WiFi
         wifi_data = self.wifi_scanner.scan_wifi(method=WIFI_SCAN_METHOD)
+        
+        self.get_logger().info(f"wifi_data: {wifi_data}")
+        
+        # Remove device connected to avoid false positives
+       # wifi_data = [wifi for wifi in wifi_data if wifi['SSID'] != 'RedmiAnto']
         
         # Scan Bluetooth
         bluetooth_list = asyncio.run(self.bluetooth_scanner.scan_bluetooth())
